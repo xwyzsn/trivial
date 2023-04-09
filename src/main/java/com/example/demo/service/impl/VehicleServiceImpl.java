@@ -58,4 +58,16 @@ public class VehicleServiceImpl extends ServiceImpl<VehicleMapper, Vehicle> impl
         vehicleMapper.delete(queryWrapper);
         return Result.succ("删除成功");
     }
+
+    public Result addCar(Integer userId, String brand, String model, float batterySize, float wattage) {
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setUserId(userId);
+        vehicle.setBrand(brand);
+        vehicle.setModel(model);
+        vehicle.setBatterySize(batterySize);
+        vehicle.setWattage(wattage);
+        vehicleMapper.insert(vehicle);
+        return Result.succ("添加成功");
+    }
 }

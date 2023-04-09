@@ -42,4 +42,12 @@ public class VehicleController {
     public Result deleteCar(@RequestParam("id") Integer id){
         return vehicleService.deleteCar(id);
     }
+    @PostMapping("addcar")
+    public Result addCar(@RequestParam("userId") Integer userId,
+                         @RequestParam("brand") String brand,
+                         @RequestParam("model") String model,
+                         @RequestParam("batterySize") float batterySize,
+                         @RequestParam("wattage") float wattage){
+        return vehicleService.addCar(userId,brand,model,batterySize,wattage);
+    }
 }

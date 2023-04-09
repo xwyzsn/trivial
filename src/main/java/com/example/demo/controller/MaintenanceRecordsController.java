@@ -37,4 +37,26 @@ public class MaintenanceRecordsController {
     public Result getAll(){
         return MaintenanceRecordsServiceImpl.getAll();
     }
+    @GetMapping(value = "getnotavail")
+    public Result getNotAvail(){
+        return MaintenanceRecordsServiceImpl.getNotAvail();
+    }
+    @GetMapping(value = "gethistory")
+    public Result getHistory(@RequestParam(value="staffId") Integer staffId){
+        return MaintenanceRecordsServiceImpl.getHistory(staffId);
+    }
+    @PostMapping(value = "finish")
+    public Result finish(
+                        @RequestParam(value = "id") Integer id,
+                         @RequestParam(value="stationName") String stationName,
+                         @RequestParam(value = "address") String address,
+                         @RequestParam(value = "description") String description,
+                         @RequestParam(value = "finishTime") String finishTime,
+                         @RequestParam(value = "cost") float cost,
+                         @RequestParam(value = "maintenanceStaffId") Integer maintenanceStaffId,
+                         @RequestParam(value = "maintenanceStaffName") String maintenanceStaffName){
+        return MaintenanceRecordsServiceImpl.finish(stationName,address,description,finishTime,maintenanceStaffId
+                ,maintenanceStaffName,
+                id,cost);
+    }
 }

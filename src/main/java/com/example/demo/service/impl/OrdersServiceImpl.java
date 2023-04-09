@@ -1,9 +1,12 @@
 package com.example.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.demo.common.Result;
 import com.example.demo.common.Utils;
+import com.example.demo.entity.ChargingStation;
 import com.example.demo.entity.Orders;
+import com.example.demo.mapper.ChargingStationMapper;
 import com.example.demo.mapper.OrdersMapper;
 import com.example.demo.service.OrdersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +32,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
 
     @Autowired
     private OrdersMapper ordersMapper;
+    @Autowired
+    private ChargingStationMapper chargingStationMapper;
     @Autowired
     private Utils utils;
     public Result getOrder(Integer userId) {
@@ -95,5 +100,30 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
             return Result.succ(orders);
         }
         return Result.succ(ordersMapper.selectList(queryWrapper));
+    }
+
+    public Result finishOrder(Integer userId, String username, Integer chargerId, String chargerName,
+                              String startTime, String endTime, Integer duration, Float cost,Integer orderId) {
+        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
+        UpdateWrapper<ChargingStation> updateWrapper1 = new UpdateWrapper<>();
+
+        updateWrapper.eq("order_id",orderId);
+        Orders orders = new Orders();
+        orders.setUserId(userId);
+        orders.setUsername(username);
+        orders.setChargerId(chargerId);
+        orders.setChargerName(chargerName);
+        Date start = utils.stringToDate(startTime);
+        orders.setStartTime(start);
+        Date end = utils.stringToDate(endTime);
+        orders.setEndTime(end);
+        orders.setDurationMinutes(duration);
+        orders.setCost(BigDecimal.valueOf(cost));
+        ordersMapper.update(orders,updateWrapper);
+        updateWrapper1.eq("id",chargerId);
+        updateWrapper1.set("status","空闲");
+        chargingStationMapper.update(null,updateWrapper1);
+        return Result.succ(orders);
+
     }
 }
