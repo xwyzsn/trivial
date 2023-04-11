@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <el-dialog v-model="dialogVisible"  class="tw-space-y-3" title="充电站信息" width="30%" :before-close="handleClose">
+        <el-dialog v-model="dialogVisible" class="tw-space-y-3" title="充电站信息" width="30%" :before-close="handleClose">
             <div><span>充电站名称：{{ showStation.name }}</span></div>
             <div>
                 <span>充电站地址：{{ showStation.address }}</span>
@@ -49,18 +49,20 @@
                 <span>充电站瓦数：{{ showStation.power }}</span>
             </div>
             <div>
-                <span>预计时间：{{ showStation.predict_time }}min ({{ showStation.predict_duration  }} )</span>
+                <span>预计时间：{{ showStation.predict_time }}min ({{ showStation.predict_duration }} )</span>
             </div>
             <div>
                 <span class="tw-mr-3">支付方式</span>
-                <el-radio-group  class="tw-ml-2" v-model="value">
+                <el-radio-group class="tw-ml-2" v-model="value">
                     <el-radio label="1">扫码</el-radio>
                     <el-radio label="2">钱包</el-radio>
                 </el-radio-group>
             </div>
-            
-            <div v-if="value==1">
-                <img class="tw-w-40 tw-h-40" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/QRcode_image.svg/1200px-QRcode_image.svg.png" alt="">
+
+            <div v-if="value == 1">
+                <img class="tw-w-40 tw-h-40"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/QRcode_image.svg/1200px-QRcode_image.svg.png"
+                    alt="">
             </div>
 
             <template #footer>
@@ -101,7 +103,7 @@ let handleClicked = (item) => {
         dialogVisible.value = true;
         showStation.value = item;
         showStation.value.predict_time = Math.ceil((battery.value / item.power) * 60);
-        
+
         showStation.value.predict_duration = dayjs().add(showStation.value.predict_time, 'minute').format('YYYY-MM-DD HH:mm:ss');
     }
 }
@@ -109,27 +111,27 @@ let confirm = () => {
     dialogVisible.value = false;
     let formData = new FormData();
     formData.append('stationId', showStation.value.id);
-    formData.append('status', 'inactive');
+    formData.append('status', '使用中');
     api({
-        url:'/chargingStation/updatestatus',
-        data:formData,
-        method:'post',
-    }).then(res=>{
+        url: '/chargingStation/updatestatus',
+        data: formData,
+        method: 'post',
+    }).then(res => {
         let formData = new FormData();
         formData.append('userId', info.value.userId);
         formData.append('chargerId', showStation.value.id);
         formData.append('chargerName', showStation.value.name);
         formData.append('startTime', dayjs().format('YYYY-MM-DD HH:mm:ss'));
-        formData.append('username',info.value.username)
+        formData.append('username', info.value.username)
         api({
-            url:'/orders/insertorder',
-            data:formData,
-            method:'post',
-        }).then(r=>{
-            if(r.data.code===200){
+            url: '/orders/insertorder',
+            data: formData,
+            method: 'post',
+        }).then(r => {
+            if (r.data.code === 200) {
                 ElMessage.success('充电成功');
                 stations.value = res.data.data;
-            }else{
+            } else {
                 ElMessage.error('充电失败');
             }
         })
